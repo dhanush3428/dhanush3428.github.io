@@ -18,20 +18,92 @@ input.onchange=()=>{
   img.src=URL.createObjectURL(f);
 };
 
-function update(type="image/jpeg",q=0.9){
+function update(type="image/png",q=1){
   dl.href=canvas.toDataURL(type,q);
 }
 
-/* -------- RESIZE FIT (NO CROP) -------- */
+/* ---------- BACKGROUND REMOVE (COLOR BASED) ---------- */
+function removeBackground(){
+  if(!img)return alert("Upload image first");
+
+  const color=document.getElementById("removeColor").value;
+  const r=parseInt(color.substr(1,2),16);
+  const g=parseInt(color.substr(3,2),16);
+  const b=parseInt(color.substr(5,2),16);
+
+  const imgData=ctx.getImageData(0,0,canvas.width,canvas.height);
+  const d=imgData.data;
+
+  for(let i=0;i<d.length;i+=4){
+    if(
+      Math.abs(d[i]-r)<30 &&
+      Math.abs(d[i+1]-g)<30 &&
+      Math.abs(d[i+2]-b)<30
+    ){
+      d[i+3]=0; // transparent
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+  update("image/png");
+}
+
+/* ---------- ADD BACKGROUND COLOR ---------- */
+function addBackgroundColor(){
+  const color=document.getElementById("bgColor").value;
+  const temp=document.createElement("canvas");
+  temp.width=canvas.width;
+  temp.height=canvas.height;
+  const tctx=temp.getContext("2d");
+
+  tctx.fillStyle=color;
+  tctx.fillRect(0,0,temp.width,temp.height);
+  tctx.drawImage(canvas,0,0);
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(temp,0,0);
+  update("image/png");
+}
+
+/* ---------- ADD BACKGROUND IMAGE ---------- */
+function addBackgroundImage(){
+  const bgInput=document.getElementById("bgImage").files[0];
+  if(!bgInput)return alert("Select background image");
+
+  const bg=new Image();
+  bg.onload=()=>{
+    const temp=document.createElement("canvas");
+    temp.width=canvas.width;
+    temp.height=canvas.height;
+    const tctx=temp.getContext("2d");
+
+    tctx.drawImage(bg,0,0,temp.width,temp.height);
+    tctx.drawImage(canvas,0,0);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(temp,0,0);
+    update("image/png");
+  };
+  bg.src=URL.createObjectURL(bgInput);
+}
+
+/* ---------- BACKGROUND BLUR ---------- */
+function backgroundBlur(){
+  if(!img)return;
+  const blur=parseInt(blurRange.value);
+  ctx.filter=`blur(${blur}px)`;
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  ctx.filter="none";
+  update();
+}
+
+/* ---------- RESIZE FIT (NO CROP) ---------- */
 function resizeFit(){
-  if(!img)return alert("Upload image");
-  const W=parseInt(document.getElementById("resizeW").value);
-  const H=parseInt(document.getElementById("resizeH").value);
+  if(!img)return;
+  const W=parseInt(resizeW.value),H=parseInt(resizeH.value);
   if(!W||!H)return alert("Enter width & height");
 
   const r=Math.min(W/img.width,H/img.height);
-  const nw=img.width*r;
-  const nh=img.height*r;
+  const nw=img.width*r,nh=img.height*r;
 
   canvas.width=W;
   canvas.height=H;
@@ -41,66 +113,8 @@ function resizeFit(){
   update();
 }
 
-/* -------- COMPRESS CONTROL -------- */
+/* ---------- COMPRESS ---------- */
 function compress(){
-  if(!img)return alert("Upload image");
-  const q=document.getElementById("quality").value/100;
-  update("image/jpeg",q);
-}
-
-/* -------- FORMAT -------- */
-function toPNG(){update("image/png",1)}
-function toJPG(){update("image/jpeg",0.9)}
-function toWEBP(){update("image/webp",0.9)}
-
-/* -------- ASPECT (NO CUT) -------- */
-function makeSquare(){
-  if(!img)return;
-  const s=Math.max(img.width,img.height);
-  canvas.width=s;canvas.height=s;
-  ctx.fillStyle="#fff";
-  ctx.fillRect(0,0,s,s);
-  ctx.drawImage(img,(s-img.width)/2,(s-img.height)/2);
-  update();
-}
-
-function makeLandscape(){
-  if(!img)return;
-  const W=1280,H=720;
-  const r=Math.min(W/img.width,H/img.height);
-  const nw=img.width*r,nh=img.height*r;
-  canvas.width=W;canvas.height=H;
-  ctx.fillStyle="#fff";
-  ctx.fillRect(0,0,W,H);
-  ctx.drawImage(img,(W-nw)/2,(H-nh)/2,nw,nh);
-  update();
-}
-
-/* -------- EDIT -------- */
-function grayscale(){
-  const d=ctx.getImageData(0,0,canvas.width,canvas.height);
-  for(let i=0;i<d.data.length;i+=4){
-    const a=(d.data[i]+d.data[i+1]+d.data[i+2])/3;
-    d.data[i]=d.data[i+1]=d.data[i+2]=a;
-  }
-  ctx.putImageData(d,0,0);
-  update();
-}
-
-function rotate(){
-  const t=document.createElement("canvas");
-  t.width=canvas.height;t.height=canvas.width;
-  const c=t.getContext("2d");
-  c.rotate(Math.PI/2);
-  c.drawImage(canvas,0,-canvas.height);
-  canvas.width=t.width;canvas.height=t.height;
-  ctx.drawImage(t,0,0);
-  update();
-}
-
-function flip(){
-  ctx.scale(-1,1);
-  ctx.drawImage(canvas,-canvas.width,0);
-  ctx.scale(-1,1);
-  update();
+  const q=quality.value/100;
+  dl.href=canvas.toDataURL("image/jpeg",q);
 }
