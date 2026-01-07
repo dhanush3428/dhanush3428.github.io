@@ -1,129 +1,143 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* -------- RESET -------- */
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f6fb;
-  color: #111;
+/* -------- BASE -------- */
+body{
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg,#f8fafc,#eef2ff);
+  color:#1f2937;
 }
 
-.top {
-  background: linear-gradient(135deg,#2563eb,#1e40af);
-  color: #fff;
-  text-align: center;
-  padding: 24px;
+/* -------- HEADER -------- */
+header{
+  background: linear-gradient(135deg,#6366f1,#3b82f6,#06b6d4);
+  color:#fff;
+  padding:28px 16px;
+  text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,0.15);
 }
 
-.tabs {
-  display: flex;
-  justify-content: center;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+header h1{
+  font-size:32px;
+  letter-spacing:0.5px;
 }
 
-.tab {
-  border: none;
-  background: none;
-  padding: 14px 20px;
-  cursor: pointer;
+header p{
+  opacity:0.95;
+  margin-top:6px;
 }
 
-.tab.active {
-  border-bottom: 3px solid #2563eb;
-  color: #2563eb;
-  font-weight: bold;
+/* -------- CONTAINER BOX -------- */
+.box{
+  background:#ffffff;
+  margin:24px auto;
+  padding:22px;
+  border-radius:16px;
+  max-width:1000px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
-.tabContent {
-  display: none;
-  max-width: 1000px;
-  margin: auto;
-  padding: 20px;
+/* -------- HEADINGS -------- */
+.box h3{
+  margin-bottom:14px;
+  font-size:20px;
+  color:#111827;
 }
 
-.tabContent.active {
-  display: block;
+/* -------- INPUTS -------- */
+input,select{
+  padding:10px 12px;
+  margin:6px 4px;
+  border-radius:10px;
+  border:1px solid #d1d5db;
+  font-size:15px;
 }
 
-.upload-box {
-  border: 2px dashed #c7d2fe;
-  padding: 20px;
-  text-align: center;
-  border-radius: 10px;
-  background: #eef2ff;
+input:focus{
+  outline:none;
+  border-color:#6366f1;
+  box-shadow:0 0 0 3px rgba(99,102,241,0.15);
 }
 
-.resize-box {
-  margin-top: 15px;
+/* -------- BUTTONS (GLOBAL) -------- */
+button{
+  padding:11px 18px;
+  margin:6px 4px;
+  font-size:15px;
+  font-weight:600;
+  color:#fff;
+  background: linear-gradient(135deg,#6366f1,#3b82f6);
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  transition:all 0.25s ease;
+  box-shadow:0 6px 18px rgba(99,102,241,0.35);
 }
 
-.resize-box input {
-  padding: 8px;
-  width: 120px;
-  margin: 5px;
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(59,130,246,0.45);
 }
 
-.tools-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
-  gap: 12px;
-  margin-top: 20px;
+button:active{
+  transform:scale(0.97);
 }
 
-.tools-grid button,
-.resize-box button,
-.utility-box button {
-  padding: 10px;
-  border: 1px solid #ddd;
-  background: #fff;
-  border-radius: 8px;
-  cursor: pointer;
+/* -------- GRID BUTTON GROUP -------- */
+.grid button{
+  min-width:160px;
 }
 
-.tools-grid button:hover {
-  border-color: #2563eb;
-  color: #2563eb;
+/* -------- CANVAS -------- */
+canvas{
+  max-width:100%;
+  margin-top:16px;
+  border-radius:14px;
+  border:1px solid #e5e7eb;
+  background:#fff;
 }
 
-.slider-box {
-  background: #fff;
-  padding: 14px;
-  border-radius: 8px;
-  margin-bottom: 12px;
+/* -------- DOWNLOAD BUTTON -------- */
+#download{
+  display:inline-block;
+  margin-top:18px;
+  padding:14px 26px;
+  font-size:16px;
+  font-weight:700;
+  text-decoration:none;
+  color:#ffffff;
+  border-radius:14px;
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  box-shadow:0 8px 24px rgba(34,197,94,0.45);
+  transition:all 0.25s ease;
 }
 
-.utility-box {
-  background: #fff;
-  padding: 14px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+#download:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(22,163,74,0.6);
 }
 
-.result {
-  text-align: center;
-  padding: 20px;
+/* -------- SMALL TEXT -------- */
+.small{
+  font-size:14px;
+  color:#6b7280;
+  margin-top:6px;
 }
 
-canvas {
-  max-width: 100%;
-  margin-top: 10px;
-}
-
-#download {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 16px;
-  background: #2563eb;
-  color: #fff;
-  border-radius: 8px;
-  text-decoration: none;
-}
-
-footer {
-  text-align: center;
-  padding: 15px;
-  color: #666;
+/* -------- RESPONSIVE -------- */
+@media(max-width:768px){
+  header h1{
+    font-size:26px;
+  }
+  .box{
+    margin:16px;
+    padding:18px;
+  }
+  button{
+    width:100%;
+  }
 }
