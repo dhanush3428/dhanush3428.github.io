@@ -2,55 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AllConvert Image Tools</title>
+<title>AllConvert – Image Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-  font-family: Arial, sans-serif;
-  background:#f4f6fb;
-  margin:0;
-  padding:0;
-}
-header{
-  background:#2563eb;
-  color:#fff;
-  padding:20px;
-  text-align:center;
-}
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
-.box{
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
-  margin-bottom:20px;
-}
-input,button{
-  padding:10px;
-  margin:5px 0;
-}
-button{
-  background:#2563eb;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
-button:hover{
-  background:#1e40af;
-}
-canvas{
-  max-width:100%;
-  margin-top:15px;
-  border:1px solid #ddd;
-}
-.tools button{
-  margin:5px;
-}
+body{font-family:Arial;background:#f4f6fb;margin:0}
+header{background:#2563eb;color:#fff;padding:20px;text-align:center}
+.box{background:#fff;margin:20px auto;padding:20px;border-radius:10px;max-width:900px}
+input,button{padding:8px;margin:5px}
+button{background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer}
+button:hover{background:#1e40af}
+canvas{max-width:100%;margin-top:10px;border:1px solid #ddd}
+.grid button{margin:4px}
+label{font-weight:bold}
 </style>
 </head>
 
@@ -58,43 +22,52 @@ canvas{
 
 <header>
   <h1>AllConvert Image Tools</h1>
-  <p>Resize • Compress • Convert • Edit (100% Browser Based)</p>
+  <p>Resize • Compress • Convert • Fit • Square • Landscape</p>
 </header>
 
-<div class="container">
+<div class="box">
+  <h3>1. Upload Image</h3>
+  <input type="file" id="imageInput" accept="image/*">
+</div>
 
-  <!-- IMAGE UPLOAD -->
-  <div class="box">
-    <h3>1. Upload Image</h3>
-    <input type="file" id="imageInput" accept="image/*">
-  </div>
+<div class="box">
+  <h3>2. Resize (NO CROP)</h3>
+  <input type="number" id="resizeW" placeholder="Width px">
+  <input type="number" id="resizeH" placeholder="Height px">
+  <button onclick="resizeFit()">Resize Fit</button>
+</div>
 
-  <!-- RESIZE -->
-  <div class="box">
-    <h3>2. Resize Image (WORKING)</h3>
-    <input type="number" id="resizeWidth" placeholder="Width (px)">
-    <input type="number" id="resizeHeight" placeholder="Height (px)">
-    <br>
-    <button onclick="resizeImage()">Resize Image</button>
-  </div>
+<div class="box">
+  <h3>3. Compress (CONTROL)</h3>
+  <label>Quality (1–100):</label>
+  <input type="number" id="quality" value="70">
+  <button onclick="compress()">Compress</button>
+</div>
 
-  <!-- TOOLS -->
-  <div class="box tools">
-    <h3>3. Other Image Tools</h3>
-    <button onclick="compressImage()">Compress</button>
-    <button onclick="convertPNG()">Convert to PNG</button>
-    <button onclick="convertJPG()">Convert to JPG</button>
-    <button onclick="grayscale()">Grayscale</button>
-    <button onclick="rotateImage()">Rotate</button>
-  </div>
+<div class="box grid">
+  <h3>4. Convert / Format</h3>
+  <button onclick="toPNG()">JPG → PNG</button>
+  <button onclick="toJPG()">PNG → JPG</button>
+  <button onclick="toWEBP()">To WebP</button>
+</div>
 
-  <!-- RESULT -->
-  <div class="box">
-    <h3>4. Result</h3>
-    <canvas id="canvas"></canvas><br>
-    <a id="download" download="result.jpg">Download Image</a>
-  </div>
+<div class="box grid">
+  <h3>5. Aspect Tools (NO CUT)</h3>
+  <button onclick="makeSquare()">Square (Fit)</button>
+  <button onclick="makeLandscape()">Landscape 16:9</button>
+</div>
 
+<div class="box grid">
+  <h3>6. Edit Tools</h3>
+  <button onclick="grayscale()">Grayscale</button>
+  <button onclick="rotate()">Rotate</button>
+  <button onclick="flip()">Flip</button>
+</div>
+
+<div class="box">
+  <h3>7. Result</h3>
+  <canvas id="canvas"></canvas><br>
+  <a id="download" download="result.jpg">Download</a>
 </div>
 
 <script src="script.js"></script>
