@@ -1,144 +1,195 @@
-const imgInput = document.getElementById("imageInput");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const link = document.getElementById("downloadLink");
-
-function loadImage(callback) {
-  const file = imgInput.files[0];
-  if (!file) return alert("Select an image");
-  const img = new Image();
-  img.onload = () => callback(img);
-  img.src = URL.createObjectURL(file);
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-function convertToPNG() {
-  loadImage(img => draw(img, "image/png"));
+/* BASE */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f4f6fb;
+  color: #111827;
+  line-height: 1.6;
 }
 
-function convertToJPG() {
-  loadImage(img => draw(img, "image/jpeg"));
+/* HEADER */
+.top {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  text-align: center;
+  padding: 28px 16px;
 }
 
-function resizeImage() {
-  loadImage(img => {
-    canvas.width = img.width / 2;
-    canvas.height = img.height / 2;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    link.href = canvas.toDataURL("image/png");
-  });
+.top h1 {
+  font-size: 30px;
+  font-weight: 700;
 }
 
-function compressImage() {
-  loadImage(img => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    link.href = canvas.toDataURL("image/jpeg", 0.5);
-  });
+.top p {
+  opacity: 0.9;
+  margin-top: 6px;
 }
 
-function grayscale() {
-  loadImage(img => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < data.data.length; i += 4) {
-      const avg = (data.data[i] + data.data[i+1] + data.data[i+2]) / 3;
-      data.data[i] = data.data[i+1] = data.data[i+2] = avg;
-    }
-    ctx.putImageData(data, 0, 0);
-    link.href = canvas.toDataURL();
-  });
+/* TABS */
+.tabs {
+  display: flex;
+  justify-content: center;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-function rotateImage() {
-  loadImage(img => {
-    canvas.width = img.height;
-    canvas.height = img.width;
-    ctx.rotate(Math.PI / 2);
-    ctx.drawImage(img, 0, -img.height);
-    ctx.rotate(-Math.PI / 2);
-    link.href = canvas.toDataURL();
-  });
+.tab {
+  background: none;
+  border: none;
+  padding: 14px 20px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #374151;
 }
 
-function flipImage() {
-  loadImage(img => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.scale(-1, 1);
-    ctx.drawImage(img, -img.width, 0);
-    ctx.scale(-1, 1);
-    link.href = canvas.toDataURL();
-  });
+.tab:hover {
+  background: #f1f5f9;
 }
 
-function toWebP() {
-  loadImage(img => draw(img, "image/webp"));
+.tab.active {
+  color: #2563eb;
+  font-weight: 600;
+  border-bottom: 3px solid #2563eb;
 }
 
-function cropSquare() {
-  loadImage(img => {
-    const size = Math.min(img.width, img.height);
-    canvas.width = size;
-    canvas.height = size;
-    ctx.drawImage(img, 0, 0, size, size, 0, 0, size, size);
-    link.href = canvas.toDataURL();
-  });
+/* SECTIONS */
+.tabContent {
+  display: none;
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
 }
 
-function draw(img, type) {
-  canvas.width = img.width;
-  canvas.height = img.height;
-  ctx.drawImage(img, 0, 0);
-  link.href = canvas.toDataURL(type);
+.tabContent.active {
+  display: block;
 }
 
-/* TEXT TOOLS */
-
-function wordCount() {
-  const t = textInput.value.trim();
-  textResult.innerText = "Words: " + (t ? t.split(/\s+/).length : 0);
+/* UPLOAD */
+.upload-box {
+  border: 2px dashed #c7d2fe;
+  padding: 30px;
+  text-align: center;
+  border-radius: 12px;
+  background: #eef2ff;
 }
 
-function charCount() {
-  textResult.innerText = "Characters: " + textInput.value.length;
+.upload-box input {
+  margin-bottom: 10px;
 }
 
-function toUpper() {
-  textInput.value = textInput.value.toUpperCase();
+/* GRID */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
 }
 
-function toLower() {
-  textInput.value = textInput.value.toLowerCase();
+.tools-grid button {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
-function reverseText() {
-  textInput.value = textInput.value.split("").reverse().join("");
+.tools-grid button:hover {
+  border-color: #2563eb;
+  color: #2563eb;
 }
 
-function removeSpaces() {
-  textInput.value = textInput.value.replace(/\s+/g, " ").trim();
+/* SLIDERS */
+.slider-box {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
 }
 
-function passwordGen() {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$";
-  let pass = "";
-  for (let i = 0; i < 12; i++) {
-    pass += chars[Math.floor(Math.random() * chars.length)];
+.slider-box label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.slider-box input {
+  width: 100%;
+}
+
+/* UTILITIES */
+.utility-box {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.utility-box h3 {
+  margin-bottom: 10px;
+}
+
+.utility-box input {
+  padding: 8px;
+  margin-right: 6px;
+  width: 140px;
+}
+
+.utility-box button {
+  padding: 8px 12px;
+}
+
+/* RESULT */
+.result {
+  text-align: center;
+  padding: 20px;
+}
+
+canvas {
+  max-width: 100%;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+#download {
+  display: inline-block;
+  margin-top: 12px;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .top h1 {
+    font-size: 24px;
   }
-  textResult.innerText = "Password: " + pass;
-}
 
-function textToImage() {
-  const text = textInput.value;
-  canvas.width = 600;
-  canvas.height = 200;
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "black";
-  ctx.font = "20px Arial";
-  ctx.fillText(text, 20, 100);
-  link.href = canvas.toDataURL();
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    flex: 1;
+    text-align: center;
+  }
 }
