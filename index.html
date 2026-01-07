@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AllConvert Tools – Free Image & Text Tools</title>
+  <meta name="description" content="Free online image and text tools. Resize, compress, convert images and process text directly in your browser.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>AllConvert Tools</h1>
+  <p>Free Image & Text Tools – No Upload, No Signup</p>
+</header>
+
+<section>
+  <h2>Image Tools</h2>
+
+  <input type="file" id="imageInput" accept="image/*">
+  <br><br>
+
+  <button onclick="convertToPNG()">JPG → PNG</button>
+  <button onclick="convertToJPG()">PNG → JPG</button>
+  <button onclick="resizeImage()">Resize</button>
+  <button onclick="compressImage()">Compress</button>
+  <button onclick="grayscale()">Grayscale</button>
+  <button onclick="rotateImage()">Rotate</button>
+  <button onclick="flipImage()">Flip</button>
+  <button onclick="toWebP()">Convert to WebP</button>
+  <button onclick="cropSquare()">Square Crop</button>
+
+  <br><br>
+  <canvas id="canvas"></canvas>
+  <br>
+  <a id="downloadLink" download>Download</a>
+</section>
+
+<section>
+  <h2>Text Tools</h2>
+
+  <textarea id="textInput" placeholder="Enter text here"></textarea><br>
+
+  <button onclick="wordCount()">Word Count</button>
+  <button onclick="charCount()">Character Count</button>
+  <button onclick="toUpper()">UPPERCASE</button>
+  <button onclick="toLower()">lowercase</button>
+  <button onclick="reverseText()">Reverse</button>
+  <button onclick="removeSpaces()">Remove Extra Spaces</button>
+  <button onclick="passwordGen()">Password Generator</button>
+  <button onclick="textToImage()">Text → Image</button>
+
+  <p id="textResult"></p>
+</section>
+
+<footer>
+  <p>© 2026 AllConvert Tools | Works fully in your browser</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+header {
+  background: #2563eb;
+  color: white;
+  padding: 20px;
+}
+
+section {
+  background: white;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1e40af;
+}
+
+textarea {
+  width: 80%;
+  height: 120px;
+}
+
+canvas {
+  max-width: 90%;
+  margin-top: 10px;
+}
+
+footer {
+  padding: 15px;
+  font-size: 14px;
+  color: #555;
+}
