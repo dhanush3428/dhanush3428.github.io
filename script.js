@@ -1,96 +1,106 @@
-const imageInput = document.getElementById("imageInput");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const download = document.getElementById("download");
+const input=document.getElementById("imageInput");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+const dl=document.getElementById("download");
 
-let originalImage = null;
+let img=null;
 
-/* LOAD IMAGE */
-imageInput.addEventListener("change", () => {
-  const file = imageInput.files[0];
-  if (!file) return;
-
-  const img = new Image();
-  img.onload = () => {
-    originalImage = img;
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    updateDownload();
+input.onchange=()=>{
+  const f=input.files[0];
+  if(!f)return;
+  img=new Image();
+  img.onload=()=>{
+    canvas.width=img.width;
+    canvas.height=img.height;
+    ctx.drawImage(img,0,0);
+    update();
   };
-  img.src = URL.createObjectURL(file);
-});
+  img.src=URL.createObjectURL(f);
+};
 
-/* UPDATE DOWNLOAD */
-function updateDownload(type="image/jpeg", quality=0.9){
-  download.href = canvas.toDataURL(type, quality);
+function update(type="image/jpeg",q=0.9){
+  dl.href=canvas.toDataURL(type,q);
 }
 
-/* RESIZE – 100% WORKING */
-function resizeImage(){
-  if(!originalImage){
-    alert("Please upload an image first");
-    return;
-  }
+/* -------- RESIZE FIT (NO CROP) -------- */
+function resizeFit(){
+  if(!img)return alert("Upload image");
+  const W=parseInt(document.getElementById("resizeW").value);
+  const H=parseInt(document.getElementById("resizeH").value);
+  if(!W||!H)return alert("Enter width & height");
 
-  const w = document.getElementById("resizeWidth").value;
-  const h = document.getElementById("resizeHeight").value;
+  const r=Math.min(W/img.width,H/img.height);
+  const nw=img.width*r;
+  const nh=img.height*r;
 
-  if(w === "" || h === ""){
-    alert("Enter both width and height");
-    return;
-  }
-
-  const newW = parseInt(w);
-  const newH = parseInt(h);
-
-  canvas.width = newW;
-  canvas.height = newH;
-  ctx.clearRect(0,0,newW,newH);
-  ctx.drawImage(originalImage, 0, 0, newW, newH);
-
-  updateDownload();
+  canvas.width=W;
+  canvas.height=H;
+  ctx.fillStyle="#fff";
+  ctx.fillRect(0,0,W,H);
+  ctx.drawImage(img,(W-nw)/2,(H-nh)/2,nw,nh);
+  update();
 }
 
-/* COMPRESS */
-function compressImage(){
-  if(!originalImage) return alert("Upload image first");
-  updateDownload("image/jpeg", 0.4);
+/* -------- COMPRESS CONTROL -------- */
+function compress(){
+  if(!img)return alert("Upload image");
+  const q=document.getElementById("quality").value/100;
+  update("image/jpeg",q);
 }
 
-/* CONVERT PNG */
-function convertPNG(){
-  if(!originalImage) return alert("Upload image first");
-  updateDownload("image/png");
+/* -------- FORMAT -------- */
+function toPNG(){update("image/png",1)}
+function toJPG(){update("image/jpeg",0.9)}
+function toWEBP(){update("image/webp",0.9)}
+
+/* -------- ASPECT (NO CUT) -------- */
+function makeSquare(){
+  if(!img)return;
+  const s=Math.max(img.width,img.height);
+  canvas.width=s;canvas.height=s;
+  ctx.fillStyle="#fff";
+  ctx.fillRect(0,0,s,s);
+  ctx.drawImage(img,(s-img.width)/2,(s-img.height)/2);
+  update();
 }
 
-/* CONVERT JPG */
-function convertJPG(){
-  if(!originalImage) return alert("Upload image first");
-  updateDownload("image/jpeg", 0.9);
+function makeLandscape(){
+  if(!img)return;
+  const W=1280,H=720;
+  const r=Math.min(W/img.width,H/img.height);
+  const nw=img.width*r,nh=img.height*r;
+  canvas.width=W;canvas.height=H;
+  ctx.fillStyle="#fff";
+  ctx.fillRect(0,0,W,H);
+  ctx.drawImage(img,(W-nw)/2,(H-nh)/2,nw,nh);
+  update();
 }
 
-/* GRAYSCALE */
+/* -------- EDIT -------- */
 function grayscale(){
-  if(!originalImage) return alert("Upload image first");
-  const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
-  for(let i=0;i<imgData.data.length;i+=4){
-    const avg = (imgData.data[i]+imgData.data[i+1]+imgData.data[i+2])/3;
-    imgData.data[i]=avg;
-    imgData.data[i+1]=avg;
-    imgData.data[i+2]=avg;
+  const d=ctx.getImageData(0,0,canvas.width,canvas.height);
+  for(let i=0;i<d.data.length;i+=4){
+    const a=(d.data[i]+d.data[i+1]+d.data[i+2])/3;
+    d.data[i]=d.data[i+1]=d.data[i+2]=a;
   }
-  ctx.putImageData(imgData,0,0);
-  updateDownload();
+  ctx.putImageData(d,0,0);
+  update();
 }
 
-/* ROTATE */
-function rotateImage(){
-  if(!originalImage) return alert("Upload image first");
-  canvas.width = originalImage.height;
-  canvas.height = originalImage.width;
-  ctx.rotate(Math.PI/2);
-  ctx.drawImage(originalImage,0,-originalImage.height);
-  ctx.rotate(-Math.PI/2);
-  updateDownload();
+function rotate(){
+  const t=document.createElement("canvas");
+  t.width=canvas.height;t.height=canvas.width;
+  const c=t.getContext("2d");
+  c.rotate(Math.PI/2);
+  c.drawImage(canvas,0,-canvas.height);
+  canvas.width=t.width;canvas.height=t.height;
+  ctx.drawImage(t,0,0);
+  update();
+}
+
+function flip(){
+  ctx.scale(-1,1);
+  ctx.drawImage(canvas,-canvas.width,0);
+  ctx.scale(-1,1);
+  update();
 }
