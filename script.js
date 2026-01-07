@@ -1,195 +1,221 @@
-/* RESET */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ===================== TABS ===================== */
+function openTab(id) {
+  document.querySelectorAll(".tabContent").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  event.target.classList.add("active");
 }
 
-/* BASE */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  background: #f4f6fb;
-  color: #111827;
-  line-height: 1.6;
+/* ===================== CANVAS SETUP ===================== */
+const imgInput = document.getElementById("imageInput");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const download = document.getElementById("download");
+
+let currentImage = null;
+let brightness = 0;
+let contrast = 0;
+let blur = 0;
+
+imgInput.addEventListener("change", () => {
+  const file = imgInput.files[0];
+  if (!file) return;
+  const img = new Image();
+  img.onload = () => {
+    currentImage = img;
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    updateDownload();
+  };
+  img.src = URL.createObjectURL(file);
+});
+
+function updateDownload(type = "image/png", quality = 1) {
+  download.href = canvas.toDataURL(type, quality);
 }
 
-/* HEADER */
-.top {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #fff;
-  text-align: center;
-  padding: 28px 16px;
+/* ===================== BASIC CONVERT ===================== */
+function convertPNG() {
+  if (!currentImage) return alert("Select image");
+  drawImage();
+  updateDownload("image/png");
 }
 
-.top h1 {
-  font-size: 30px;
-  font-weight: 700;
+function convertJPG() {
+  if (!currentImage) return alert("Select image");
+  drawImage();
+  updateDownload("image/jpeg", 0.9);
 }
 
-.top p {
-  opacity: 0.9;
-  margin-top: 6px;
+function toWebP() {
+  if (!currentImage) return alert("Select image");
+  drawImage();
+  updateDownload("image/webp", 0.9);
 }
 
-/* TABS */
-.tabs {
-  display: flex;
-  justify-content: center;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+/* ===================== IMAGE DRAW ===================== */
+function drawImage() {
+  canvas.width = currentImage.width;
+  canvas.height = currentImage.height;
+  ctx.filter = `brightness(${100 + brightness}%) contrast(${100 + contrast}%) blur(${blur}px)`;
+  ctx.drawImage(currentImage, 0, 0);
+  ctx.filter = "none";
 }
 
-.tab {
-  background: none;
-  border: none;
-  padding: 14px 20px;
-  cursor: pointer;
-  font-size: 15px;
-  color: #374151;
+/* ===================== RESIZE / COMPRESS ===================== */
+function resizeImage() {
+  if (!currentImage) return alert("Select image");
+  canvas.width = Math.floor(currentImage.width / 2);
+  canvas.height = Math.floor(currentImage.height / 2);
+  ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+  updateDownload();
 }
 
-.tab:hover {
-  background: #f1f5f9;
+function compressImage() {
+  if (!currentImage) return alert("Select image");
+  drawImage();
+  updateDownload("image/jpeg", 0.5);
 }
 
-.tab.active {
-  color: #2563eb;
-  font-weight: 600;
-  border-bottom: 3px solid #2563eb;
+/* ===================== CROP / ROTATE / FLIP ===================== */
+function cropSquare() {
+  if (!currentImage) return alert("Select image");
+  const size = Math.min(currentImage.width, currentImage.height);
+  canvas.width = size;
+  canvas.height = size;
+  ctx.drawImage(currentImage, 0, 0, size, size, 0, 0, size, size);
+  updateDownload();
 }
 
-/* SECTIONS */
-.tabContent {
-  display: none;
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
+function rotateImage() {
+  if (!currentImage) return alert("Select image");
+  canvas.width = currentImage.height;
+  canvas.height = currentImage.width;
+  ctx.rotate(Math.PI / 2);
+  ctx.drawImage(currentImage, 0, -currentImage.height);
+  ctx.rotate(-Math.PI / 2);
+  updateDownload();
 }
 
-.tabContent.active {
-  display: block;
+function flipImage() {
+  if (!currentImage) return alert("Select image");
+  canvas.width = currentImage.width;
+  canvas.height = currentImage.height;
+  ctx.scale(-1, 1);
+  ctx.drawImage(currentImage, -currentImage.width, 0);
+  ctx.scale(-1, 1);
+  updateDownload();
 }
 
-/* UPLOAD */
-.upload-box {
-  border: 2px dashed #c7d2fe;
-  padding: 30px;
-  text-align: center;
-  border-radius: 12px;
-  background: #eef2ff;
-}
-
-.upload-box input {
-  margin-bottom: 10px;
-}
-
-/* GRID */
-.tools-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 14px;
-  margin-top: 20px;
-}
-
-.tools-grid button {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  padding: 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-.tools-grid button:hover {
-  border-color: #2563eb;
-  color: #2563eb;
-}
-
-/* SLIDERS */
-.slider-box {
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 14px;
-  border: 1px solid #e5e7eb;
-}
-
-.slider-box label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.slider-box input {
-  width: 100%;
-}
-
-/* UTILITIES */
-.utility-box {
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 16px;
-  border: 1px solid #e5e7eb;
-}
-
-.utility-box h3 {
-  margin-bottom: 10px;
-}
-
-.utility-box input {
-  padding: 8px;
-  margin-right: 6px;
-  width: 140px;
-}
-
-.utility-box button {
-  padding: 8px 12px;
-}
-
-/* RESULT */
-.result {
-  text-align: center;
-  padding: 20px;
-}
-
-canvas {
-  max-width: 100%;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-#download {
-  display: inline-block;
-  margin-top: 12px;
-  background: #2563eb;
-  color: #ffffff;
-  padding: 10px 16px;
-  border-radius: 8px;
-  text-decoration: none;
-}
-
-/* FOOTER */
-footer {
-  text-align: center;
-  padding: 16px;
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* RESPONSIVE */
-@media (max-width: 600px) {
-  .top h1 {
-    font-size: 24px;
+/* ===================== FILTERS ===================== */
+function grayscale() {
+  if (!currentImage) return alert("Select image");
+  drawImage();
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < data.data.length; i += 4) {
+    const avg = (data.data[i] + data.data[i+1] + data.data[i+2]) / 3;
+    data.data[i] = data.data[i+1] = data.data[i+2] = avg;
   }
+  ctx.putImageData(data, 0, 0);
+  updateDownload();
+}
 
-  .tabs {
-    flex-wrap: wrap;
+/* ===================== SLIDERS ===================== */
+function setBrightness(v) { brightness = parseInt(v); }
+function setContrast(v) { contrast = parseInt(v); }
+function setBlur(v) { blur = parseInt(v); }
+
+function applyAdjustments() {
+  if (!currentImage) return alert("Select image");
+  drawImage();
+  updateDownload();
+}
+
+/* ===================== BORDER & WATERMARK ===================== */
+function addBorder() {
+  if (!currentImage) return alert("Select image");
+  const pad = 20;
+  const w = canvas.width + pad * 2;
+  const h = canvas.height + pad * 2;
+  const temp = document.createElement("canvas");
+  temp.width = w;
+  temp.height = h;
+  const tctx = temp.getContext("2d");
+  tctx.fillStyle = "#ffffff";
+  tctx.fillRect(0, 0, w, h);
+  tctx.drawImage(canvas, pad, pad);
+  canvas.width = w;
+  canvas.height = h;
+  ctx.drawImage(temp, 0, 0);
+  updateDownload();
+}
+
+function addWatermark() {
+  if (!currentImage) return alert("Select image");
+  drawImage();
+  ctx.font = "20px Arial";
+  ctx.fillStyle = "rgba(0,0,0,0.5)";
+  ctx.fillText("AllConvert Tools", 20, canvas.height - 20);
+  updateDownload();
+}
+
+/* ===================== COLOR PICK ===================== */
+function pickColor() {
+  canvas.addEventListener("click", function handler(e) {
+    const x = e.offsetX;
+    const y = e.offsetY;
+    const p = ctx.getImageData(x, y, 1, 1).data;
+    alert(`RGB(${p[0]}, ${p[1]}, ${p[2]})`);
+    canvas.removeEventListener("click", handler);
+  });
+}
+
+/* ===================== SOCIAL RESIZE ===================== */
+function socialResize(w, h) {
+  if (!currentImage) return alert("Select image");
+  canvas.width = w;
+  canvas.height = h;
+  ctx.drawImage(currentImage, 0, 0, w, h);
+  updateDownload();
+}
+
+/* ===================== UTILITIES ===================== */
+function calcRatio() {
+  const w = document.getElementById("w").value;
+  const h = document.getElementById("h").value;
+  if (!w || !h) return;
+  document.getElementById("ratioResult").innerText = "Aspect Ratio: " + (w / h).toFixed(2);
+}
+
+function convertColor() {
+  const val = document.getElementById("colorInput").value.trim();
+  const out = document.getElementById("colorResult");
+
+  if (val.startsWith("#")) {
+    const r = parseInt(val.substr(1,2),16);
+    const g = parseInt(val.substr(3,2),16);
+    const b = parseInt(val.substr(5,2),16);
+    out.innerText = `RGB(${r}, ${g}, ${b})`;
+  } else if (val.startsWith("rgb")) {
+    const nums = val.match(/\d+/g);
+    const hex = "#" + nums.map(n => (+n).toString(16).padStart(2,"0")).join("");
+    out.innerText = hex;
+  } else {
+    out.innerText = "Invalid color";
   }
+}
 
-  .tab {
-    flex: 1;
-    text-align: center;
+function generatePalette() {
+  const p = document.getElementById("palette");
+  p.innerHTML = "";
+  for (let i = 0; i < 5; i++) {
+    const c = "#" + Math.floor(Math.random()*16777215).toString(16);
+    const d = document.createElement("div");
+    d.style.background = c;
+    d.style.height = "40px";
+    d.style.margin = "4px";
+    d.innerText = c;
+    p.appendChild(d);
   }
 }
