@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AllConvert – Image Tools</title>
+<title>AllConvert – Image Background Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{font-family:Arial;background:#f4f6fb;margin:0}
 header{background:#2563eb;color:#fff;padding:20px;text-align:center}
-.box{background:#fff;margin:20px auto;padding:20px;border-radius:10px;max-width:900px}
-input,button{padding:8px;margin:5px}
+.box{background:#fff;margin:20px auto;padding:20px;border-radius:10px;max-width:1000px}
+input,button,select{padding:8px;margin:5px}
 button{background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer}
 button:hover{background:#1e40af}
 canvas{max-width:100%;margin-top:10px;border:1px solid #ddd}
-.grid button{margin:4px}
 label{font-weight:bold}
+.small{font-size:13px;color:#555}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>AllConvert Image Tools</h1>
-  <p>Resize • Compress • Convert • Fit • Square • Landscape</p>
+  <h1>AllConvert – Image Background Tools</h1>
+  <p>Remove Background • Add Background • Resize • Compress • Convert</p>
 </header>
 
 <div class="box">
@@ -31,43 +31,47 @@ label{font-weight:bold}
 </div>
 
 <div class="box">
-  <h3>2. Resize (NO CROP)</h3>
-  <input type="number" id="resizeW" placeholder="Width px">
-  <input type="number" id="resizeH" placeholder="Height px">
-  <button onclick="resizeFit()">Resize Fit</button>
+  <h3>2. Background Tools</h3>
+  <label>Pick Background Color to Remove</label><br>
+  <input type="color" id="removeColor" value="#ffffff">
+  <button onclick="removeBackground()">Remove Background</button>
+  <br><br>
+
+  <label>Add New Background Color</label><br>
+  <input type="color" id="bgColor" value="#ffffff">
+  <button onclick="addBackgroundColor()">Apply Background</button>
+  <br><br>
+
+  <label>Add Background Image</label><br>
+  <input type="file" id="bgImage" accept="image/*">
+  <button onclick="addBackgroundImage()">Apply Background Image</button>
 </div>
 
 <div class="box">
-  <h3>3. Compress (CONTROL)</h3>
-  <label>Quality (1–100):</label>
+  <h3>3. Blur Background</h3>
+  <input type="range" id="blurRange" min="0" max="20" value="8">
+  <button onclick="backgroundBlur()">Blur Background</button>
+</div>
+
+<div class="box">
+  <h3>4. Resize (Fit – No Crop)</h3>
+  <input type="number" id="resizeW" placeholder="Width px">
+  <input type="number" id="resizeH" placeholder="Height px">
+  <button onclick="resizeFit()">Resize</button>
+</div>
+
+<div class="box">
+  <h3>5. Compress</h3>
+  <label>Quality (1–100)</label>
   <input type="number" id="quality" value="70">
   <button onclick="compress()">Compress</button>
 </div>
 
-<div class="box grid">
-  <h3>4. Convert / Format</h3>
-  <button onclick="toPNG()">JPG → PNG</button>
-  <button onclick="toJPG()">PNG → JPG</button>
-  <button onclick="toWEBP()">To WebP</button>
-</div>
-
-<div class="box grid">
-  <h3>5. Aspect Tools (NO CUT)</h3>
-  <button onclick="makeSquare()">Square (Fit)</button>
-  <button onclick="makeLandscape()">Landscape 16:9</button>
-</div>
-
-<div class="box grid">
-  <h3>6. Edit Tools</h3>
-  <button onclick="grayscale()">Grayscale</button>
-  <button onclick="rotate()">Rotate</button>
-  <button onclick="flip()">Flip</button>
-</div>
-
 <div class="box">
-  <h3>7. Result</h3>
+  <h3>6. Result</h3>
   <canvas id="canvas"></canvas><br>
-  <a id="download" download="result.jpg">Download</a>
+  <a id="download" download="result.png">Download Image</a>
+  <p class="small">PNG keeps transparency</p>
 </div>
 
 <script src="script.js"></script>
