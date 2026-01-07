@@ -1,52 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AllConvert Tools – Free Image & Utility Tools</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free online image editing, resize, compress, convert and utility tools. Everything works in your browser." />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>AllConvert Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free image tools – resize, compress, convert, edit images directly in your browser.">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <header class="top">
   <h1>AllConvert Tools</h1>
-  <p>Free Image, Text & Utility Tools (No Upload • No Signup)</p>
+  <p>Free Image & Utility Tools (No Upload, No Signup)</p>
 </header>
 
 <nav class="tabs">
-  <button class="tab active" onclick="openTab('imageTab')">Image Tools</button>
-  <button class="tab" onclick="openTab('editTab')">Edit Tools</button>
-  <button class="tab" onclick="openTab('socialTab')">Social Sizes</button>
-  <button class="tab" onclick="openTab('utilityTab')">Utilities</button>
+  <button class="tab active" onclick="openTab(event,'image')">Image Tools</button>
+  <button class="tab" onclick="openTab(event,'edit')">Edit</button>
+  <button class="tab" onclick="openTab(event,'social')">Social</button>
+  <button class="tab" onclick="openTab(event,'utility')">Utilities</button>
 </nav>
 
-<!-- ================= IMAGE TOOLS ================= -->
-<section id="imageTab" class="tabContent active">
-
+<!-- IMAGE TOOLS -->
+<section id="image" class="tabContent active">
   <div class="upload-box">
     <input type="file" id="imageInput" accept="image/*">
-    <p>Select an image to start</p>
+    <p>Select an image</p>
+  </div>
+
+  <div class="resize-box">
+    <input type="number" id="newWidth" placeholder="Width (px)">
+    <input type="number" id="newHeight" placeholder="Height (px)">
+    <button onclick="resizeImage()">Resize</button>
   </div>
 
   <div class="tools-grid">
     <button onclick="convertPNG()">JPG → PNG</button>
     <button onclick="convertJPG()">PNG → JPG</button>
-    <button onclick="toWebP()">Convert to WebP</button>
-    <button onclick="resizeImage()">Resize</button>
+    <button onclick="toWebP()">To WebP</button>
     <button onclick="compressImage()">Compress</button>
     <button onclick="cropSquare()">Square Crop</button>
     <button onclick="rotateImage()">Rotate</button>
     <button onclick="flipImage()">Flip</button>
     <button onclick="grayscale()">Grayscale</button>
   </div>
-
 </section>
 
-<!-- ================= EDIT TOOLS ================= -->
-<section id="editTab" class="tabContent">
-
+<!-- EDIT -->
+<section id="edit" class="tabContent">
   <div class="slider-box">
     <label>Brightness</label>
     <input type="range" min="-100" max="100" value="0" oninput="setBrightness(this.value)">
@@ -65,28 +66,23 @@
   <div class="tools-grid">
     <button onclick="applyAdjustments()">Apply Effects</button>
     <button onclick="addBorder()">Add Border</button>
-    <button onclick="addWatermark()">Text Watermark</button>
-    <button onclick="pickColor()">Pick Color</button>
+    <button onclick="addWatermark()">Add Watermark</button>
   </div>
-
 </section>
 
-<!-- ================= SOCIAL MEDIA ================= -->
-<section id="socialTab" class="tabContent">
-
+<!-- SOCIAL -->
+<section id="social" class="tabContent">
   <div class="tools-grid">
-    <button onclick="socialResize(1080,1080)">Instagram Post (1:1)</button>
-    <button onclick="socialResize(1080,1920)">Instagram Reel (9:16)</button>
-    <button onclick="socialResize(1280,720)">YouTube Thumbnail (16:9)</button>
+    <button onclick="socialResize(1080,1080)">Instagram Post</button>
+    <button onclick="socialResize(1080,1920)">Instagram Reel</button>
+    <button onclick="socialResize(1280,720)">YouTube Thumbnail</button>
   </div>
-
 </section>
 
-<!-- ================= UTILITIES ================= -->
-<section id="utilityTab" class="tabContent">
-
+<!-- UTILITIES -->
+<section id="utility" class="tabContent">
   <div class="utility-box">
-    <h3>Aspect Ratio Calculator</h3>
+    <h3>Aspect Ratio</h3>
     <input type="number" id="w" placeholder="Width">
     <input type="number" id="h" placeholder="Height">
     <button onclick="calcRatio()">Calculate</button>
@@ -94,7 +90,7 @@
   </div>
 
   <div class="utility-box">
-    <h3>HEX ↔ RGB Converter</h3>
+    <h3>Color Converter</h3>
     <input type="text" id="colorInput" placeholder="#ff0000 or rgb(255,0,0)">
     <button onclick="convertColor()">Convert</button>
     <p id="colorResult"></p>
@@ -105,18 +101,15 @@
     <button onclick="generatePalette()">Generate</button>
     <div id="palette"></div>
   </div>
-
 </section>
 
-<!-- ================= RESULT ================= -->
 <section class="result">
-  <canvas id="canvas"></canvas>
-  <br>
-  <a id="download" download>Download Result</a>
+  <canvas id="canvas"></canvas><br>
+  <a id="download" download>Download Image</a>
 </section>
 
 <footer>
-  <p>© 2026 AllConvert Tools • Works fully in your browser</p>
+  <p>© 2026 AllConvert Tools</p>
 </footer>
 
 <script src="script.js"></script>
